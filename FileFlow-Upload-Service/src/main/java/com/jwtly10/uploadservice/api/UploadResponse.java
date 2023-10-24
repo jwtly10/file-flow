@@ -1,4 +1,4 @@
-package com.jwtly10.uploadservice.responses;
+package com.jwtly10.uploadservice.api;
 
 import lombok.Getter;
 import lombok.Setter;

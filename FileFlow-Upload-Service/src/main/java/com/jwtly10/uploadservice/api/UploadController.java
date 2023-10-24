@@ -1,7 +1,6 @@
-package com.jwtly10.uploadservice.controller;
+package com.jwtly10.uploadservice.api;
 
 import com.jwtly10.uploadservice.exceptions.UploadException;
-import com.jwtly10.uploadservice.responses.UploadResponse;
 import com.jwtly10.uploadservice.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +29,4 @@ public class UploadController {
     public ResponseEntity<UploadResponse> handleCustomException(UploadException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UploadResponse("Error during file Upload: " + ex.getMessage()));
     }
-
-
 }

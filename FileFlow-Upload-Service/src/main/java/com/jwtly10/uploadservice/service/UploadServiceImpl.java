@@ -3,6 +3,8 @@ package com.jwtly10.uploadservice.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jwtly10.uploadservice.exceptions.UploadException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,11 +14,15 @@ import java.util.UUID;
 public class UploadServiceImpl implements UploadService {
 
     private static final Logger log = LoggerFactory.getLogger(UploadServiceImpl.class);
-
     private final TempStorageService tempStorageService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public UploadServiceImpl(TempStorageService tempStorageService) {
+    @Value("file.uploaded.topic")
+    private String fileUploadedTopic;
+
+    public UploadServiceImpl(TempStorageService tempStorageService, KafkaTemplate<String, String> kafkaTemplate) {
         this.tempStorageService = tempStorageService;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Override
@@ -32,6 +38,7 @@ public class UploadServiceImpl implements UploadService {
             throw new UploadException("Failed to save file to local storage");
         }
 
+        publishFileUploadedEvent(uniqueIdentifier);
         log.info("File uploaded successfully. Unique identifier: " + uniqueIdentifier);
         return uniqueIdentifier;
     }
@@ -95,10 +102,7 @@ public class UploadServiceImpl implements UploadService {
         return uniqueIdentifier;
     }
 
-
     private void publishFileUploadedEvent(String uniqueIdentifier) {
-        // publish event
+        kafkaTemplate.send(fileUploadedTopic, uniqueIdentifier);
     }
-
-
 }
