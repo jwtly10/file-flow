@@ -1,5 +1,6 @@
-package com.jwtly10.uploadservice.service;
+package com.jwtly10.uploadservice.service.upload;
 
+import com.jwtly10.uploadservice.service.storage.TempStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jwtly10.uploadservice.exceptions.UploadException;
@@ -17,7 +18,7 @@ public class UploadServiceImpl implements UploadService {
     private final TempStorageService tempStorageService;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("file.uploaded.topic")
+    @Value("${file.uploaded.topic}")
     private String fileUploadedTopic;
 
     public UploadServiceImpl(TempStorageService tempStorageService, KafkaTemplate<String, String> kafkaTemplate) {
@@ -44,10 +45,9 @@ public class UploadServiceImpl implements UploadService {
     }
 
     private void validateFile(MultipartFile file) {
-        final long GB = 1073741824;
-        if (file.getSize() > GB) {
-            log.error("File size is too big: " + file.getSize());
-            throw new UploadException("File size is too large (max 1GB)");
+
+        if (file.getSize() > 10000000) {
+            throw new UploadException("File size is too large (max 10MB)");
         }
 
         if (file.isEmpty()) {
@@ -64,28 +64,6 @@ public class UploadServiceImpl implements UploadService {
             }
         }
     }
-
-    private String sanitizeFilename(String string) {
-        // Remove any leading path
-        int lastSlashIndex = string.lastIndexOf("/");
-        if (lastSlashIndex != -1) {
-            string = string.substring(lastSlashIndex + 1);
-        }
-
-        // Ensure that the filename is a valid filename
-        String validCharactersPattern = "[a-zA-Z0-9._-]+";
-        StringBuilder result = new StringBuilder();
-
-        for (char c : string.toCharArray()) {
-            // Check if the character matches the valid characters pattern
-            if (String.valueOf(c).matches(validCharactersPattern)) {
-                result.append(c);
-            }
-        }
-
-        return result.toString();
-    }
-
 
     private String generateUniqueIdentifier(MultipartFile file) {
         // Generate a unique identifier for the file, like file.txt -> 1234567890.txt

@@ -1,7 +1,7 @@
 package com.jwtly10.uploadservice.api;
 
 import com.jwtly10.uploadservice.exceptions.UploadException;
-import com.jwtly10.uploadservice.service.UploadService;
+import com.jwtly10.uploadservice.service.upload.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

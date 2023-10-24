@@ -1,6 +1,7 @@
-package com.jwtly10.uploadservice.service;
+package com.jwtly10.uploadservice.service.storage;
 
 import com.jwtly10.uploadservice.exceptions.UploadException;
+import com.jwtly10.uploadservice.service.upload.UploadServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +33,9 @@ public class TempStorageImpl implements TempStorageService {
             }
         }
 
-        // Create a File object for the local storage
         File localFile = new File(uploadDirectory, uniqueIdentifier);
 
-        // Transfer the MultipartFile to the local file
+        log.info("Saving file to local storage: " + localFile.getAbsolutePath());
         file.transferTo(localFile);
     }
 }
