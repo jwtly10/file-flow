@@ -19,7 +19,7 @@ public class TempStorageImpl implements TempStorageService {
     private String uploadPath;
 
     @Override
-    public void saveFile(MultipartFile file, String uniqueIdentifier) throws IOException {
+    public String saveFile(MultipartFile file, String uniqueIdentifier) throws IOException {
         // Save the file to disk
         File uploadDirectory = new File(uploadPath);
         if (!uploadDirectory.exists()) {
@@ -37,5 +37,7 @@ public class TempStorageImpl implements TempStorageService {
 
         log.info("Saving file to local storage: " + localFile.getAbsolutePath());
         file.transferTo(localFile);
+
+        return localFile.getAbsolutePath();
     }
 }

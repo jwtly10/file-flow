@@ -1,6 +1,9 @@
 package com.jwtly10.uploadservice.service.upload;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.uploadservice.service.storage.TempStorageService;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jwtly10.uploadservice.exceptions.UploadException;
@@ -9,6 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -30,16 +34,27 @@ public class UploadServiceImpl implements UploadService {
     public String uploadFile(MultipartFile file) {
         // TODO: Handle multiple files
         validateFile(file);
+        String storageLocation;
 
         String uniqueIdentifier = generateUniqueIdentifier(file);
         try {
-            tempStorageService.saveFile(file, uniqueIdentifier);
+            storageLocation = tempStorageService.saveFile(file, uniqueIdentifier);
         } catch (Exception e) {
             log.error("Failed to save file to local storage " + e.getMessage());
             throw new UploadException("Failed to save file to local storage");
         }
+        UploadFile uploadedFile = UploadFile.builder()
+                .fileId(uniqueIdentifier)
+                .uploadBy("user")
+                .originalName(file.getOriginalFilename())
+                .contentType(file.getContentType())
+                .fileType(file.getContentType())
+                .size(file.getSize())
+                .uploadDate(Date.from(new Date().toInstant()))
+                .fileLocation(storageLocation)
+                .build();
 
-        publishFileUploadedEvent(uniqueIdentifier);
+        publishFileUploadedEvent(uploadedFile);
         log.info("File uploaded successfully. Unique identifier: " + uniqueIdentifier);
         return uniqueIdentifier;
     }
@@ -80,7 +95,15 @@ public class UploadServiceImpl implements UploadService {
         return uniqueIdentifier;
     }
 
-    private void publishFileUploadedEvent(String uniqueIdentifier) {
-        kafkaTemplate.send(fileUploadedTopic, uniqueIdentifier);
+    private void publishFileUploadedEvent(UploadFile uploadedFile) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String uploadedFileJson = objectMapper.writeValueAsString(uploadedFile);
+            log.info("Publishing file uploaded event: " + uploadedFileJson);
+            kafkaTemplate.send(new ProducerRecord<>(fileUploadedTopic, uploadedFile.getFileId(), uploadedFileJson));
+        } catch (Exception e) {
+            log.error("Failed to serialize file uploaded event: " + e.getMessage());
+            throw new UploadException("Failed to serialize file uploaded event");
+        }
     }
 }
