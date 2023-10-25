@@ -4,13 +4,10 @@ import java.util.Date;
 
 import lombok.*;
 
-@Data
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@ToString
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UploadFile {
     private String fileId;
     private String originalName;

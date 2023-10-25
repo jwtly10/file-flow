@@ -2,8 +2,8 @@ package com.jwtly10.processorService.service.kafka;
 
 import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.processorService.service.processor.FileProcessorService;
-import com.jwtly10.processorService.service.processor.ImageProcessorService;
-import com.jwtly10.processorService.service.processor.LogProcessorService;
+import com.jwtly10.processorService.service.processor.ImageProcessorServiceImpl;
+import com.jwtly10.processorService.service.processor.LogProcessorServiceImpl;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,9 +21,13 @@ public class KafkaListenerService {
     Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
     KafkaConsumerService kafkaConsumerService;
     FileProcessorService processor;
+    ImageProcessorServiceImpl imageProcessorService;
+    LogProcessorServiceImpl logProcessorService;
 
-    public KafkaListenerService(KafkaConsumerService kafkaConsumerService) {
+    public KafkaListenerService(KafkaConsumerService kafkaConsumerService, ImageProcessorServiceImpl imageProcessorService, LogProcessorServiceImpl logProcessorService) {
         this.kafkaConsumerService = kafkaConsumerService;
+        this.imageProcessorService = imageProcessorService;
+        this.logProcessorService = logProcessorService;
     }
 
     @KafkaListener(topics = "${file.uploaded.topic}")
@@ -38,20 +42,21 @@ public class KafkaListenerService {
 
         if (fileToProcess != null) {
             UploadFile finalFileToProcess = fileToProcess;
+            // Spin up new thread
             executor.submit(() -> {
                 if (Objects.equals(finalFileToProcess.getContentType(), "image/png")) {
-                    processor = new ImageProcessorService();
+                    processor = imageProcessorService;
                 } else if (Objects.equals(finalFileToProcess.getContentType(), "text/plain")) {
-                    processor = new LogProcessorService();
+                    processor = logProcessorService;
                 } else {
-                    log.error("File type not supported");
+                    log.error(String.format("File %s is unsupported format: %s", finalFileToProcess.getFileId(), finalFileToProcess.getContentType()));
                 }
 
                 File file = getFileToProcess(finalFileToProcess);
-                processor.processFile(file);
+                processor.processFile(file, finalFileToProcess);
             });
         } else {
-            log.error("File to process is null");
+            log.error(String.format("File to process is null. Kafka reported: %s", message));
         }
     }
 

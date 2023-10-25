@@ -4,8 +4,10 @@ import com.jwtly10.processorService.service.kafka.KafkaConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.jwtly10"})
 public class FileProcessorServiceApp {
     KafkaConsumerService kafkaConsumerService;
 
@@ -17,6 +19,5 @@ public class FileProcessorServiceApp {
     public static void main(String[] args) {
         SpringApplication.run(FileProcessorServiceApp.class, args);
     }
-
 
 }
