@@ -12,6 +12,8 @@ public class ProcessedFile {
     private String fileId;
     @JsonProperty("originalfilename")
     private String originalFileName;
+    @JsonProperty("newfilename")
+    private String newFileName;
     @JsonProperty("filetype")
     private String fileType;
     @JsonProperty("filesize")

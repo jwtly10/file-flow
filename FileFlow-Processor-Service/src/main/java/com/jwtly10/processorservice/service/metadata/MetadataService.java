@@ -12,14 +12,14 @@ public class MetadataService {
         return new ProcessedFile(
                 uploadedFile.getFileId(),
                 uploadedFile.getOriginalName(),
+                uploadedFile.getNewFileName(),
                 uploadedFile.getFileType(),
                 uploadedFile.getSize(),
-                uploadedFile.getUploadBy(),
+                uploadedFile.getUploadedBy(),
                 PROCESSED.toString(),
                 uploadedFile.getUploadDate(),
                 new java.sql.Timestamp(System.currentTimeMillis())
         );
-
 
     }
 }

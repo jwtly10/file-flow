@@ -11,10 +11,11 @@ import lombok.*;
 public class UploadFile {
     private String fileId;
     private String originalName;
+    private String newFileName;
     private String fileType;
     private String fileLocation;
     private String contentType;
-    private String uploadBy;
+    private String uploadedBy;
     private long size;
     private Date uploadDate;
 }

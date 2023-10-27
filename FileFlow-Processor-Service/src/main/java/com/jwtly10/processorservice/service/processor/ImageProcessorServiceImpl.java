@@ -31,6 +31,7 @@ public class ImageProcessorServiceImpl implements FileProcessorService {
         // TODO ...
 
         log.info("Image file processed successfully: " + file.getName());
+        uploadFile.setNewFileName("new_" + uploadFile.getOriginalName());
 
         if (supabaseService.logRecordSuccess(metadataService.generateRecord(uploadFile))) {
             log.info("Processed image logged to DB");

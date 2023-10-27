@@ -53,7 +53,7 @@ public class KafkaListenerService {
                     if (mimeType == null) {
                         mimeType = "text/plain";
                     }
-                    storageService.save(finalFileToStore.getUploadBy() + "/" + finalFileToStore.getOriginalName(), processorService.getBinaryData(finalFileToStore.getFileLocation()), mimeType);
+                    storageService.save(finalFileToStore.getUploadedBy() + "/" + finalFileToStore.getFileId(), processorService.getBinaryData(finalFileToStore.getFileLocation()), mimeType);
                     log.info("Successfully stored file: " + finalFileToStore.getFileId());
                 } catch (IOException e) {
                     log.error("Error while reading to binary: " + finalFileToStore.getFileId() + " " + e.getMessage());

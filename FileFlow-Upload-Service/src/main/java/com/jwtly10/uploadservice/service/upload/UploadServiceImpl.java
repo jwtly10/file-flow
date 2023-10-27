@@ -45,7 +45,7 @@ public class UploadServiceImpl implements UploadService {
         }
         UploadFile uploadedFile = UploadFile.builder()
                 .fileId(uniqueIdentifier)
-                .uploadBy("user")
+                .uploadedBy("user")
                 .originalName(file.getOriginalFilename())
                 .contentType(file.getContentType())
                 .fileType(file.getContentType())
