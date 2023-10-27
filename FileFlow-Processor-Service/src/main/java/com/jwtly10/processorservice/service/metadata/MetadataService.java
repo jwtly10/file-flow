@@ -1,4 +1,4 @@
-package com.jwtly10.processorService.service.metadata;
+package com.jwtly10.processorservice.service.metadata;
 
 import com.jwtly10.common.models.ProcessedFile;
 import com.jwtly10.common.models.UploadFile;

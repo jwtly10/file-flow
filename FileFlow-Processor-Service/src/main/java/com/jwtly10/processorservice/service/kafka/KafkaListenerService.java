@@ -1,9 +1,10 @@
-package com.jwtly10.processorService.service.kafka;
+package com.jwtly10.processorservice.service.kafka;
 
 import com.jwtly10.common.models.UploadFile;
-import com.jwtly10.processorService.service.processor.FileProcessorService;
-import com.jwtly10.processorService.service.processor.ImageProcessorServiceImpl;
-import com.jwtly10.processorService.service.processor.LogProcessorServiceImpl;
+import com.jwtly10.common.service.kafka.KafkaConsumerService;
+import com.jwtly10.processorservice.service.processor.FileProcessorService;
+import com.jwtly10.processorservice.service.processor.ImageProcessorServiceImpl;
+import com.jwtly10.processorservice.service.processor.LogProcessorServiceImpl;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;

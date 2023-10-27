@@ -1,4 +1,4 @@
-package com.jwtly10.databaseservice.config;
+package com.jwtly10.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

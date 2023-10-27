@@ -1,8 +1,8 @@
-package com.jwtly10.processorService.service.kafka;
+package com.jwtly10.processorservice.service.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwtly10.common.models.UploadFile;
-import com.jwtly10.processorService.exceptions.FileProcessorException;
+import com.jwtly10.processorservice.exceptions.FileProcessorException;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
-package com.jwtly10.processorService;
+package com.jwtly10.processorservice;
 
-import com.jwtly10.processorService.service.kafka.KafkaConsumerService;
+import com.jwtly10.common.service.kafka.KafkaConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

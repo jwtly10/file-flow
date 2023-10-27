@@ -1,8 +1,8 @@
-package com.jwtly10.processorService.service.processor;
+package com.jwtly10.processorservice.service.processor;
 
 import com.jwtly10.common.models.UploadFile;
-import com.jwtly10.processorService.service.kafka.KafkaProducerService;
-import com.jwtly10.processorService.service.metadata.MetadataService;
+import com.jwtly10.processorservice.service.kafka.KafkaProducerService;
+import com.jwtly10.processorservice.service.metadata.MetadataService;
 import org.slf4j.Logger;
 import com.jwtly10.databaseservice.service.SupabaseService;
 import org.springframework.beans.factory.annotation.Autowired;

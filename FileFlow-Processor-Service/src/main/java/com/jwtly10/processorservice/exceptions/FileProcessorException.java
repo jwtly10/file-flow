@@ -1,4 +1,4 @@
-package com.jwtly10.processorService.exceptions;
+package com.jwtly10.processorservice.exceptions;
 
 public class FileProcessorException extends RuntimeException {
 

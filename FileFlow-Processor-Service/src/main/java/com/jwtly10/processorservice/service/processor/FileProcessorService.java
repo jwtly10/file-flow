@@ -1,4 +1,4 @@
-package com.jwtly10.processorService.service.processor;
+package com.jwtly10.processorservice.service.processor;
 
 import com.jwtly10.common.models.UploadFile;
 
