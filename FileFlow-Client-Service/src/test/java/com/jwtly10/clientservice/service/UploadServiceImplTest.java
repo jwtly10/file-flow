@@ -1,8 +1,8 @@
-package com.jwtly10.uploadservice.service;
+package com.jwtly10.clientservice.service;
 
-import com.jwtly10.uploadservice.exceptions.UploadException;
-import com.jwtly10.uploadservice.service.storage.TempStorageService;
-import com.jwtly10.uploadservice.service.upload.UploadServiceImpl;
+import com.jwtly10.clientservice.exceptions.ClientException;
+import com.jwtly10.clientservice.service.storage.TempStorageService;
+import com.jwtly10.clientservice.service.upload.UploadServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -55,7 +55,7 @@ public class UploadServiceImplTest {
                 "Hello, World!".getBytes()
         );
 
-        UploadException exception = assertThrows(UploadException.class, () -> uploadService.uploadFile(mockFile, "test"));
+        ClientException exception = assertThrows(ClientException.class, () -> uploadService.uploadFile(mockFile, "test"));
 
         String expectedErrorMessage = "File type is not supported";
         assertEquals(expectedErrorMessage, exception.getMessage());
@@ -70,7 +70,7 @@ public class UploadServiceImplTest {
                 new byte[12000000]
         );
 
-        UploadException exception = assertThrows(UploadException.class, () -> uploadService.uploadFile(mockFile, "test"));
+        ClientException exception = assertThrows(ClientException.class, () -> uploadService.uploadFile(mockFile, "test"));
 
         String expectedErrorMessage = "File size is too large (max 10MB)";
         assertEquals(expectedErrorMessage, exception.getMessage());

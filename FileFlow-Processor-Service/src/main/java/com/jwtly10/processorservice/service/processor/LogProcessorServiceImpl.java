@@ -28,10 +28,12 @@ public class LogProcessorServiceImpl implements FileProcessorService {
 
         // TODO ...
 
-        if (supabaseService.logRecordSuccess(metadataService.generateRecord(uploadFile))) {
-            log.info("Processed log record created successfully");
-        } else {
-            log.error("Failed to create processed log record");
+        try {
+            supabaseService.createProcessedFile(metadataService.generateRecord(uploadFile));
+            log.info("Log Processed File record created successfully");
+        } catch (Exception e) {
+            log.error("Failed to create processed log record: " + e.getMessage());
+            return;
         }
 
         kafkaProducerService.publishFileProcessedEvent(uploadFile);

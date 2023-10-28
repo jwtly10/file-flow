@@ -47,7 +47,6 @@ public class KafkaListenerService {
             UploadFile finalFileToStore = fileToStore;
             // Spin up new thread
             executor.submit(() -> {
-                log.info("Storing file: " + finalFileToStore.getFileId());
                 try {
                     String mimeType = Files.probeContentType(Path.of(finalFileToStore.getFileLocation()));
                     if (mimeType == null) {

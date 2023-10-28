@@ -33,10 +33,12 @@ public class ImageProcessorServiceImpl implements FileProcessorService {
         log.info("Image file processed successfully: " + file.getName());
         uploadFile.setNewFileName("new_" + uploadFile.getOriginalName());
 
-        if (supabaseService.logRecordSuccess(metadataService.generateRecord(uploadFile))) {
-            log.info("Processed image logged to DB");
-        } else {
-            log.error("Failed to log processed image to DB");
+        try {
+            supabaseService.createProcessedFile(metadataService.generateRecord(uploadFile));
+            log.info("Log Processed File record created successfully");
+        } catch (Exception e) {
+            log.error("Failed to create processed image record: " + e.getMessage());
+            return;
         }
 
         kafkaProducerService.publishFileProcessedEvent(uploadFile);

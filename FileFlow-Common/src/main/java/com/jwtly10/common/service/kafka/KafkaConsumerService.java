@@ -11,7 +11,7 @@ public class KafkaConsumerService {
     Logger log = org.slf4j.LoggerFactory.getLogger(KafkaConsumerService.class);
 
     public UploadFile listen(String message) {
-        log.debug("Received Kafka Message in group: " + message);
+        log.info("Received Kafka Message in group");
 
         ObjectMapper objectMapper = new ObjectMapper();
         UploadFile uploadFile;

@@ -1,12 +1,12 @@
-package com.jwtly10.uploadservice.service.upload;
+package com.jwtly10.clientservice.service.upload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwtly10.common.models.UploadFile;
-import com.jwtly10.uploadservice.service.storage.TempStorageService;
+import com.jwtly10.clientservice.service.storage.TempStorageService;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.jwtly10.uploadservice.exceptions.UploadException;
+import com.jwtly10.clientservice.exceptions.ClientException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class UploadServiceImpl implements UploadService {
             storageLocation = tempStorageService.saveFile(file, uniqueIdentifier);
         } catch (Exception e) {
             log.error("Failed to save file to local storage " + e.getMessage());
-            throw new UploadException("Failed to save file to local storage");
+            throw new ClientException("Failed to save file to local storage");
         }
         UploadFile uploadedFile = UploadFile.builder()
                 .fileId(uniqueIdentifier)
@@ -62,11 +62,11 @@ public class UploadServiceImpl implements UploadService {
     private void validateFile(MultipartFile file) {
 
         if (file.getSize() > 10000000) {
-            throw new UploadException("File size is too large (max 10MB)");
+            throw new ClientException("File size is too large (max 10MB)");
         }
 
         if (file.isEmpty()) {
-            throw new UploadException("File is empty");
+            throw new ClientException("File is empty");
         }
 
         if (file.getOriginalFilename() != null) {
@@ -74,7 +74,7 @@ public class UploadServiceImpl implements UploadService {
             if (lastDotIndex != -1) {
                 String fileExtension = file.getOriginalFilename().substring(lastDotIndex + 1);
                 if (!fileExtension.equals("log") && !fileExtension.equals("jpg") && !fileExtension.equals("png")) {
-                    throw new UploadException("File type is not supported");
+                    throw new ClientException("File type is not supported");
                 }
             }
         }
@@ -84,7 +84,7 @@ public class UploadServiceImpl implements UploadService {
         // Generate a unique identifier for the file, like file.txt -> 1234567890.txt
         String uniqueIdentifier = UUID.randomUUID().toString();
         if (file.getOriginalFilename() == null) {
-            throw new UploadException("Failed to generate unique identifier. File name is null");
+            throw new ClientException("Failed to generate unique identifier. File name is null");
         }
 
         int lastDotIndex = file.getOriginalFilename().lastIndexOf(".");
@@ -103,7 +103,7 @@ public class UploadServiceImpl implements UploadService {
             kafkaTemplate.send(new ProducerRecord<>(fileUploadedTopic, uploadedFile.getFileId(), uploadedFileJson));
         } catch (Exception e) {
             log.error("Failed to serialize file uploaded event: " + e.getMessage());
-            throw new UploadException("Failed to serialize file uploaded event");
+            throw new ClientException("Failed to serialize file uploaded event");
         }
     }
 }

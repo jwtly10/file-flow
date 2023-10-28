@@ -16,7 +16,7 @@
     <description>FileFlow: Kafka-Powered File Processing Service</description>
     <modules>
         <module>FileFlow-DB-Service</module>
-        <module>FileFlow-Upload-Service</module>
+        <module>FileFlow-Client-Service</module>
         <module>FileFlow-Processor-Service</module>
         <module>FileFlow-Common</module>
         <module>FileFlow-Storage-Service</module>

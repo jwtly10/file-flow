@@ -1,4 +1,4 @@
-package com.jwtly10.uploadservice.service.upload;
+package com.jwtly10.clientservice.service.upload;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,7 +1,7 @@
-package com.jwtly10.uploadservice.service.storage;
+package com.jwtly10.clientservice.service.storage;
 
-import com.jwtly10.uploadservice.exceptions.UploadException;
-import com.jwtly10.uploadservice.service.upload.UploadServiceImpl;
+import com.jwtly10.clientservice.exceptions.ClientException;
+import com.jwtly10.clientservice.service.upload.UploadServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,11 +25,11 @@ public class TempStorageImpl implements TempStorageService {
         if (!uploadDirectory.exists()) {
             try {
                 if (!uploadDirectory.mkdirs()) {
-                    throw new UploadException("Failed to create directory");
+                    throw new ClientException("Failed to create directory");
                 }
             } catch (SecurityException e) {
                 log.error("Failed to create directory: " + e.getMessage());
-                throw new UploadException("Failed to create directory");
+                throw new ClientException("Failed to create directory");
             }
         }
 
