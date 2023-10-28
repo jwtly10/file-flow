@@ -3,6 +3,7 @@ package com.jwtly10.processorservice.service.kafka;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.processorservice.exceptions.FileProcessorException;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class KafkaProducerService {
     final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaProducerService.class);
 
@@ -17,10 +19,6 @@ public class KafkaProducerService {
 
     @Value("${file.processed.topic}")
     private String fileProcessedTopic;
-
-    public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     public void publishFileProcessedEvent(UploadFile uploadedFile) {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -1,6 +1,7 @@
 package com.jwtly10.clientservice.api.auth;
 
 import com.jwtly10.clientservice.service.auth.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationService service;
-
-    public AuthController(AuthenticationService service) {
-        this.service = service;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(

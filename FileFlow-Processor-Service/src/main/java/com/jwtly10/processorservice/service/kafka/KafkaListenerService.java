@@ -5,6 +5,7 @@ import com.jwtly10.common.service.kafka.KafkaConsumerService;
 import com.jwtly10.processorservice.service.processor.FileProcessorService;
 import com.jwtly10.processorservice.service.processor.ImageProcessorServiceImpl;
 import com.jwtly10.processorservice.service.processor.LogProcessorServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@RequiredArgsConstructor
 public class KafkaListenerService {
     @Value("${thread.pool.size}")
     private int threadPoolSize;
@@ -24,12 +26,6 @@ public class KafkaListenerService {
     FileProcessorService processor;
     final ImageProcessorServiceImpl imageProcessorService;
     final LogProcessorServiceImpl logProcessorService;
-
-    public KafkaListenerService(KafkaConsumerService kafkaConsumerService, ImageProcessorServiceImpl imageProcessorService, LogProcessorServiceImpl logProcessorService) {
-        this.kafkaConsumerService = kafkaConsumerService;
-        this.imageProcessorService = imageProcessorService;
-        this.logProcessorService = logProcessorService;
-    }
 
     @KafkaListener(topics = "${file.uploaded.topic}")
     public void listen(String message) {

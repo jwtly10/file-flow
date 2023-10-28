@@ -5,6 +5,7 @@ import com.jwtly10.common.service.kafka.KafkaConsumerService;
 import com.jwtly10.storageservice.exceptions.StorageServiceException;
 import com.jwtly10.storageservice.service.processor.ProcessorService;
 import com.jwtly10.storageservice.service.storage.StorageService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
+@RequiredArgsConstructor
 public class KafkaListenerService {
     @Value("${thread.pool.size}")
     private int threadPoolSize;
@@ -25,12 +27,6 @@ public class KafkaListenerService {
     private final StorageService storageService;
     private final ProcessorService processorService;
     final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
-
-    public KafkaListenerService(KafkaConsumerService kafkaConsumerService, StorageService storageService, ProcessorService processorService) {
-        this.kafkaConsumerService = kafkaConsumerService;
-        this.storageService = storageService;
-        this.processorService = processorService;
-    }
 
     @KafkaListener(topics = "${file.processed.topic}")
     public void listen(String message) {

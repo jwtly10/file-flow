@@ -6,6 +6,7 @@ import com.jwtly10.common.models.ProcessedFile;
 import com.jwtly10.common.models.User;
 import com.jwtly10.databaseservice.dto.UserDTO;
 import com.jwtly10.databaseservice.exceptions.DatabaseException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class SupabaseService {
 
     final Logger log = org.slf4j.LoggerFactory.getLogger(SupabaseService.class);
@@ -32,12 +34,6 @@ public class SupabaseService {
 
     @Value("${supabase.apiKey}")
     private String supabaseKey;
-
-    @Autowired
-    public SupabaseService(RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
-    }
 
     public void push(String table, Object data) {
         log.debug("Pushing to supabase");

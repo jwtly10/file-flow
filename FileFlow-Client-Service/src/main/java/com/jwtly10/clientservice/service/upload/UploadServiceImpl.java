@@ -3,6 +3,7 @@ package com.jwtly10.clientservice.service.upload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.clientservice.service.storage.TempStorageService;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UploadServiceImpl implements UploadService {
 
     private static final Logger log = LoggerFactory.getLogger(UploadServiceImpl.class);
@@ -24,11 +26,6 @@ public class UploadServiceImpl implements UploadService {
 
     @Value("${file.uploaded.topic}")
     private String fileUploadedTopic;
-
-    public UploadServiceImpl(TempStorageService tempStorageService, KafkaTemplate<String, String> kafkaTemplate) {
-        this.tempStorageService = tempStorageService;
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     @Override
     public String uploadFile(MultipartFile file, String userId) {

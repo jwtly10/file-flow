@@ -4,23 +4,19 @@ import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.databaseservice.service.SupabaseService;
 import com.jwtly10.processorservice.service.kafka.KafkaProducerService;
 import com.jwtly10.processorservice.service.metadata.MetadataService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 @Service
+@RequiredArgsConstructor
 public class LogProcessorServiceImpl implements FileProcessorService {
     final Logger log = org.slf4j.LoggerFactory.getLogger(LogProcessorServiceImpl.class);
     private final SupabaseService supabaseService;
     private final MetadataService metadataService;
     private final KafkaProducerService kafkaProducerService;
-
-    public LogProcessorServiceImpl(SupabaseService supabaseService, MetadataService metadataService, KafkaProducerService kafkaProducerService) {
-        this.supabaseService = supabaseService;
-        this.metadataService = metadataService;
-        this.kafkaProducerService = kafkaProducerService;
-    }
 
     @Override
     public void processFile(File file, UploadFile uploadFile) {

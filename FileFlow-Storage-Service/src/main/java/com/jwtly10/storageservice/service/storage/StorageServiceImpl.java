@@ -1,6 +1,7 @@
 package com.jwtly10.storageservice.service.storage;
 
 import com.jwtly10.storageservice.exceptions.StorageServiceException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
     final Logger log = org.slf4j.LoggerFactory.getLogger(StorageServiceImpl.class);
@@ -25,11 +27,6 @@ public class StorageServiceImpl implements StorageService {
 
     @Value("${supabase.url}")
     private String supabaseUrl;
-
-    @Autowired
-    public StorageServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     @Override
     public void save(String location, byte[] fileBytes, String mimeType) {
