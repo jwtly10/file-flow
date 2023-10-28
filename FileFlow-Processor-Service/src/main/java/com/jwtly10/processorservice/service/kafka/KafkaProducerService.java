@@ -26,7 +26,7 @@ public class KafkaProducerService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String uploadedFileJson = objectMapper.writeValueAsString(uploadedFile);
-            log.info("Publishing file uploaded event: " + uploadedFileJson);
+            log.debug("Publishing file uploaded event: " + uploadedFileJson);
             kafkaTemplate.send(new ProducerRecord<>(fileProcessedTopic, uploadedFile.getFileId(), uploadedFileJson));
         } catch (Exception e) {
             log.error("Failed to serialize file uploaded event: " + e.getMessage());

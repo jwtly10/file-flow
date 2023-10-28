@@ -31,7 +31,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String userId) {
         // TODO: Handle multiple files
         validateFile(file);
         String storageLocation;
@@ -45,7 +45,7 @@ public class UploadServiceImpl implements UploadService {
         }
         UploadFile uploadedFile = UploadFile.builder()
                 .fileId(uniqueIdentifier)
-                .uploadedBy("user")
+                .uploadedBy(userId)
                 .originalName(file.getOriginalFilename())
                 .contentType(file.getContentType())
                 .fileType(file.getContentType())
@@ -99,7 +99,7 @@ public class UploadServiceImpl implements UploadService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String uploadedFileJson = objectMapper.writeValueAsString(uploadedFile);
-            log.info("Publishing file uploaded event: " + uploadedFileJson);
+            log.debug("Publishing file uploaded event: " + uploadedFileJson);
             kafkaTemplate.send(new ProducerRecord<>(fileUploadedTopic, uploadedFile.getFileId(), uploadedFileJson));
         } catch (Exception e) {
             log.error("Failed to serialize file uploaded event: " + e.getMessage());

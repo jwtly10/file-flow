@@ -41,7 +41,7 @@ public class UploadServiceImplTest {
                 "Hello, World!".getBytes()
         );
 
-        String result = uploadService.uploadFile(mockFile);
+        String result = uploadService.uploadFile(mockFile, "test");
 
         assertNotNull(result);
     }
@@ -56,7 +56,7 @@ public class UploadServiceImplTest {
         );
 
         UploadException exception = assertThrows(UploadException.class, () -> {
-            uploadService.uploadFile(mockFile);
+            uploadService.uploadFile(mockFile, "test");
         });
 
         String expectedErrorMessage = "File type is not supported";
@@ -73,7 +73,7 @@ public class UploadServiceImplTest {
         );
 
         UploadException exception = assertThrows(UploadException.class, () -> {
-            uploadService.uploadFile(mockFile);
+            uploadService.uploadFile(mockFile, "test");
         });
 
         String expectedErrorMessage = "File size is too large (max 10MB)";

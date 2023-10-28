@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/upload")
+@RequestMapping("/api/v1/users")
 public class UploadController {
 
     @Autowired
@@ -19,9 +19,10 @@ public class UploadController {
         this.uploadService = uploadService;
     }
 
-    @PostMapping
-    public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") MultipartFile file) {
-        String uniqueIdentifier = uploadService.uploadFile(file);
+    @PostMapping("/{userId}/upload")
+    public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId) {
+        // TODO - Validate user
+        String uniqueIdentifier = uploadService.uploadFile(file, userId);
         return ResponseEntity.ok(new UploadResponse(uniqueIdentifier));
     }
 
