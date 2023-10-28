@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.jwtly10"})
 public class FileProcessorServiceApp {
-    KafkaConsumerService kafkaConsumerService;
+    final KafkaConsumerService kafkaConsumerService;
 
     @Autowired
     public FileProcessorServiceApp(KafkaConsumerService kafkaConsumerService) {

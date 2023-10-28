@@ -11,7 +11,7 @@ import java.io.File;
 
 @Service
 public class LogProcessorServiceImpl implements FileProcessorService {
-    Logger log = org.slf4j.LoggerFactory.getLogger(LogProcessorServiceImpl.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(LogProcessorServiceImpl.class);
     private final SupabaseService supabaseService;
     private final MetadataService metadataService;
     private final KafkaProducerService kafkaProducerService;

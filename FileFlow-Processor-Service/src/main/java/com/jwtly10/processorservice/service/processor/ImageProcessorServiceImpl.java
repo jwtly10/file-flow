@@ -12,7 +12,7 @@ import java.io.File;
 
 @Service
 public class ImageProcessorServiceImpl implements FileProcessorService {
-    Logger log = org.slf4j.LoggerFactory.getLogger(ImageProcessorServiceImpl.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(ImageProcessorServiceImpl.class);
     private final SupabaseService supabaseService;
     private final MetadataService metadataService;
     private final KafkaProducerService kafkaProducerService;

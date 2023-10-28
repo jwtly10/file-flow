@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaProducerService {
-    Logger log = org.slf4j.LoggerFactory.getLogger(KafkaProducerService.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaProducerService.class);
 
-    KafkaTemplate<String, String> kafkaTemplate;
+    final KafkaTemplate<String, String> kafkaTemplate;
 
     @Value("${file.processed.topic}")
     private String fileProcessedTopic;

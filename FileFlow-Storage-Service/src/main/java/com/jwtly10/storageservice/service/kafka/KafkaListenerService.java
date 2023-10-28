@@ -24,7 +24,7 @@ public class KafkaListenerService {
     private final KafkaConsumerService kafkaConsumerService;
     private final StorageService storageService;
     private final ProcessorService processorService;
-    Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
 
     public KafkaListenerService(KafkaConsumerService kafkaConsumerService, StorageService storageService, ProcessorService processorService) {
         this.kafkaConsumerService = kafkaConsumerService;

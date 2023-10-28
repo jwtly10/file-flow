@@ -19,11 +19,11 @@ import java.util.concurrent.Executors;
 public class KafkaListenerService {
     @Value("${thread.pool.size}")
     private int threadPoolSize;
-    Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
-    KafkaConsumerService kafkaConsumerService;
+    final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaListenerService.class);
+    final KafkaConsumerService kafkaConsumerService;
     FileProcessorService processor;
-    ImageProcessorServiceImpl imageProcessorService;
-    LogProcessorServiceImpl logProcessorService;
+    final ImageProcessorServiceImpl imageProcessorService;
+    final LogProcessorServiceImpl logProcessorService;
 
     public KafkaListenerService(KafkaConsumerService kafkaConsumerService, ImageProcessorServiceImpl imageProcessorService, LogProcessorServiceImpl logProcessorService) {
         this.kafkaConsumerService = kafkaConsumerService;

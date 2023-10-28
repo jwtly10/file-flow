@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public class UserDAOImpl implements UserDAO<User> {
 
-    Logger log = org.slf4j.LoggerFactory.getLogger(UserDAOImpl.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(UserDAOImpl.class);
 
     private final SupabaseService supabaseService;
 

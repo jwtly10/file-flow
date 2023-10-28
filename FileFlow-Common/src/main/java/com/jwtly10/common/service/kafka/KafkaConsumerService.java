@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaConsumerService {
-    Logger log = org.slf4j.LoggerFactory.getLogger(KafkaConsumerService.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(KafkaConsumerService.class);
 
     public UploadFile listen(String message) {
         log.info("Received Kafka Message in group");

@@ -22,7 +22,7 @@ import java.util.Collections;
 @Service
 public class SupabaseService {
 
-    Logger log = org.slf4j.LoggerFactory.getLogger(SupabaseService.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(SupabaseService.class);
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;

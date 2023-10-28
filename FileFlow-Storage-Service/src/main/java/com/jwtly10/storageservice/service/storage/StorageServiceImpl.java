@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-    Logger log = org.slf4j.LoggerFactory.getLogger(StorageServiceImpl.class);
+    final Logger log = org.slf4j.LoggerFactory.getLogger(StorageServiceImpl.class);
 
     private final RestTemplate restTemplate;
 
