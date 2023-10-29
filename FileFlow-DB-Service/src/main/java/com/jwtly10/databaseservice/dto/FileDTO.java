@@ -1,13 +1,14 @@
-package com.jwtly10.common.models;
+package com.jwtly10.databaseservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class ProcessedFile {
+public class FileDTO {
     @JsonProperty("fileid")
     private String fileId;
     @JsonProperty("originalfilename")
@@ -20,8 +21,10 @@ public class ProcessedFile {
     private long fileSize;
     @JsonProperty("uploadedby")
     private String uploadedBy;
-    @JsonProperty("processstatus")
-    private String processStatus;
+    @JsonProperty("state")
+    private String state;
+    @JsonProperty("error")
+    private String error;
     @JsonProperty("created")
     private Date created;
     @JsonProperty("updated")

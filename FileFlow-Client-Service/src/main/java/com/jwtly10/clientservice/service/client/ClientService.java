@@ -1,5 +1,6 @@
 package com.jwtly10.clientservice.service.client;
 
+import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.databaseservice.service.SupabaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,5 +12,9 @@ public class ClientService {
 
     public String getUserId(String username) {
         return supabaseService.getUserId(username);
+    }
+
+    public void logFile(UploadFile uploadFile) {
+        supabaseService.createUploadedFile(uploadFile);
     }
 }

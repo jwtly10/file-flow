@@ -1,7 +1,8 @@
 package com.jwtly10.common.models;
 
 public enum ProcessedState {
+    QUEUED,
     PROCESSED,
-    STORED,
-    FAILED
+    FAILED,
+    UPLOADED
 }

@@ -1,12 +1,11 @@
 package com.jwtly10.processorservice.service.processor;
 
+import com.jwtly10.common.models.ProcessedState;
 import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.processorservice.service.kafka.KafkaProducerService;
-import com.jwtly10.processorservice.service.metadata.MetadataService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import com.jwtly10.databaseservice.service.SupabaseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import java.io.File;
 public class ImageProcessorServiceImpl implements FileProcessorService {
     final Logger log = org.slf4j.LoggerFactory.getLogger(ImageProcessorServiceImpl.class);
     private final SupabaseService supabaseService;
-    private final MetadataService metadataService;
     private final KafkaProducerService kafkaProducerService;
 
     @Override
@@ -28,14 +26,7 @@ public class ImageProcessorServiceImpl implements FileProcessorService {
         log.info("Image file processed successfully: " + file.getName());
         uploadFile.setNewFileName("new_" + uploadFile.getOriginalName());
 
-        try {
-            supabaseService.createProcessedFile(metadataService.generateRecord(uploadFile));
-            log.info("Log Processed File record created successfully");
-        } catch (Exception e) {
-            log.error("Failed to create processed image record: " + e.getMessage());
-            return;
-        }
-
+        supabaseService.updateFileState(uploadFile.getFileId(), ProcessedState.PROCESSED.toString());
         kafkaProducerService.publishFileProcessedEvent(uploadFile);
     }
 }

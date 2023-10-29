@@ -55,6 +55,7 @@ public class UploadServiceImpl implements UploadService {
                 .fileLocation(storageLocation)
                 .build();
 
+        clientService.logFile(uploadedFile);
         publishFileUploadedEvent(uploadedFile);
         log.info("File uploaded successfully. Unique identifier: " + uniqueIdentifier);
         return uniqueIdentifier;

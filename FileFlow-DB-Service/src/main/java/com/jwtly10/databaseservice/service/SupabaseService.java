@@ -2,8 +2,11 @@ package com.jwtly10.databaseservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jwtly10.common.models.ProcessedFile;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jwtly10.common.models.ProcessedState;
+import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.common.models.User;
+import com.jwtly10.databaseservice.dto.FileDTO;
 import com.jwtly10.databaseservice.dto.UserDTO;
 import com.jwtly10.databaseservice.exceptions.DatabaseException;
 import lombok.RequiredArgsConstructor;
@@ -28,15 +31,15 @@ public class SupabaseService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    @Value("${supabase.url}")
-    private String supabaseUrl;
+    @Value("${supabase.db.url}")
+    private String supabaseDBUrl;
 
     @Value("${supabase.apiKey}")
     private String supabaseKey;
 
-    public void push(String table, Object data) {
+    public void create(String table, Object data) {
         log.debug("Pushing to supabase");
-        String apiUrl = supabaseUrl + table;
+        String apiUrl = supabaseDBUrl + table;
         HttpHeaders headers = new HttpHeaders();
         headers.set("apikey", supabaseKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -47,7 +50,6 @@ public class SupabaseService {
             ResponseEntity<String> res = restTemplate.postForEntity(apiUrl, req, String.class);
             if (res.getStatusCode().is2xxSuccessful()) {
                 log.debug("Successfully INSERT to supabase");
-                // TODO: Decide if how I want to handle errors here
             } else {
                 throw new DatabaseException("Failed to INSERT to supabase" + res.getStatusCode() + res.getBody());
             }
@@ -58,7 +60,7 @@ public class SupabaseService {
 
     public String get(String table, String field, String value) {
         log.debug(String.format("Selecting from supabase %s - %s", table, field));
-        String apiUrl = supabaseUrl + table + "?" + field + "=eq." + value;
+        String apiUrl = supabaseDBUrl + table + "?" + field + "=eq." + value;
         HttpHeaders headers = new HttpHeaders();
         headers.set("apikey", supabaseKey);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -77,8 +79,42 @@ public class SupabaseService {
         }
     }
 
-    public void createProcessedFile(ProcessedFile processedFile) {
-        push("processed_file_metadata_tb", processedFile);
+    public void update(String table, String fieldToUpdate, String whereField, String whereData, String updateValue) {
+        log.debug(String.format("Updating supabase %s - %s", table, fieldToUpdate));
+        String apiUrl = supabaseDBUrl + table + "?" + whereField + "=eq." + whereData;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("apikey", supabaseKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        try {
+            ObjectNode updateData = objectMapper.createObjectNode();
+            updateData.put(fieldToUpdate, updateValue);
+            updateData.put("updated", new java.sql.Timestamp(System.currentTimeMillis()).toString());
+
+            HttpEntity<String> req = new HttpEntity<>(updateData.toString(), headers);
+            ResponseEntity<String> res = restTemplate.exchange(apiUrl, org.springframework.http.HttpMethod.PATCH, req, String.class);
+            if (res.getStatusCode().is2xxSuccessful()) {
+                log.debug("Successfully UPDATE supabase");
+            } else {
+                throw new DatabaseException("Failed to UPDATE supabase" + res.getStatusCode() + res.getBody());
+            }
+        } catch (HttpClientErrorException e) {
+            throw new DatabaseException("Failed to UPDATE supabase: " + e.getMessage());
+        }
+    }
+
+    public void createUploadedFile(UploadFile uploadFile) {
+        create("uploaded_file_tb", convertFile(uploadFile));
+    }
+
+    public void updateFileState(String fileId, String state) {
+        update("uploaded_file_tb", "state", "fileid", fileId, state);
+    }
+
+    public void updateFileState(String fileId, String state, String error) {
+        // TODO: Refactor to accept array of strings with validation
+        update("uploaded_file_tb", "state", "fileid", fileId, state);
+        update("uploaded_file_tb", "error", "fileid", fileId, error);
     }
 
     public void createUser(User user) {
@@ -90,8 +126,7 @@ public class SupabaseService {
                 .password(user.getPassword())
                 .role(user.getRole().toString())
                 .build();
-        // TODO - Handle unique constraint violation
-        push("users_tb", userDTO);
+        create("users_tb", userDTO);
     }
 
     public User getUser(String email) {
@@ -108,5 +143,20 @@ public class SupabaseService {
     public String getUserId(String email) {
         User user = getUser(email);
         return user.getUser_Id();
+    }
+
+    private FileDTO convertFile(UploadFile uploadFile) {
+        return new FileDTO(
+                uploadFile.getFileId(),
+                uploadFile.getOriginalName(),
+                uploadFile.getNewFileName(),
+                uploadFile.getFileType(),
+                uploadFile.getSize(),
+                uploadFile.getUploadedBy(),
+                ProcessedState.QUEUED.toString(),
+                "",
+                uploadFile.getUploadDate(),
+                new java.sql.Timestamp(System.currentTimeMillis())
+        );
     }
 }
