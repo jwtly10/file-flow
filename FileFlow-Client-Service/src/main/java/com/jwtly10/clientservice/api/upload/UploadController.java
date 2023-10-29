@@ -20,7 +20,6 @@ public class UploadController {
 
     @PostMapping
     public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") MultipartFile file) {
-        // TODO - Validate user
         // Get the user from the token they sent
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
