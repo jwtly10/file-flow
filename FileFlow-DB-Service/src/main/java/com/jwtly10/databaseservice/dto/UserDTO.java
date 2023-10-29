@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class UserDTO {
     // This is a requirement (for now) of the Supabase API
-    private String username;
+    private String user_id;
     private String first_name;
     private String last_name;
     private String email;

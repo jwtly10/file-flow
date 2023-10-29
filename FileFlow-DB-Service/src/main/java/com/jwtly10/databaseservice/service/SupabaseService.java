@@ -8,7 +8,6 @@ import com.jwtly10.databaseservice.dto.UserDTO;
 import com.jwtly10.databaseservice.exceptions.DatabaseException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -84,13 +83,14 @@ public class SupabaseService {
 
     public void createUser(User user) {
         UserDTO userDTO = UserDTO.builder()
-                .username(user.getUsername())
+                .user_id(user.getUser_Id())
                 .first_name(user.getFirst_name())
                 .last_name(user.getLast_name())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .role(user.getRole().toString())
                 .build();
+        // TODO - Handle unique constraint violation
         push("users_tb", userDTO);
     }
 
@@ -103,5 +103,10 @@ public class SupabaseService {
         } catch (JsonProcessingException e) {
             throw new DatabaseException("Failed to get user: " + e.getMessage());
         }
+    }
+
+    public String getUserId(String email) {
+        User user = getUser(email);
+        return user.getUser_Id();
     }
 }

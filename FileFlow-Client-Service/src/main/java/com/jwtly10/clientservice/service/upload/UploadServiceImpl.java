@@ -1,6 +1,7 @@
 package com.jwtly10.clientservice.service.upload;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwtly10.clientservice.service.client.ClientService;
 import com.jwtly10.common.models.UploadFile;
 import com.jwtly10.clientservice.service.storage.TempStorageService;
 import lombok.RequiredArgsConstructor;
@@ -23,26 +24,29 @@ public class UploadServiceImpl implements UploadService {
     private static final Logger log = LoggerFactory.getLogger(UploadServiceImpl.class);
     private final TempStorageService tempStorageService;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ClientService clientService;
 
     @Value("${file.uploaded.topic}")
     private String fileUploadedTopic;
 
     @Override
-    public String uploadFile(MultipartFile file, String userId) {
+    public String uploadFile(MultipartFile file, String username) {
         // TODO: Handle multiple files
         validateFile(file);
         String storageLocation;
-
         String uniqueIdentifier = generateUniqueIdentifier(file);
+
         try {
             storageLocation = tempStorageService.saveFile(file, uniqueIdentifier);
         } catch (Exception e) {
             log.error("Failed to save file to local storage " + e.getMessage());
             throw new ClientException("Failed to save file to local storage");
         }
+
+        // Build and publish upload files
         UploadFile uploadedFile = UploadFile.builder()
                 .fileId(uniqueIdentifier)
-                .uploadedBy(userId)
+                .uploadedBy(clientService.getUserId(username))
                 .originalName(file.getOriginalFilename())
                 .contentType(file.getContentType())
                 .fileType(file.getContentType())

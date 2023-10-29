@@ -15,7 +15,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     private Integer id;
-    private String username;
+    private String user_id;
     private String first_name;
     private String last_name;
     private String email;
@@ -32,8 +32,8 @@ public class User implements UserDetails {
         return email;
     }
 
-    public String getRealUsername() {
-        return username;
+    public String getUser_Id() {
+        return user_id;
     }
 
     @Override

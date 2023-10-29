@@ -5,20 +5,26 @@ import com.jwtly10.clientservice.service.upload.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/upload")
 @RequiredArgsConstructor
 public class UploadController {
 
     final UploadService uploadService;
 
-    @PostMapping("/{userId}/upload")
-    public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable("userId") String userId) {
+    @PostMapping
+    public ResponseEntity<UploadResponse> uploadImage(@RequestParam("file") MultipartFile file) {
         // TODO - Validate user
-        String uniqueIdentifier = uploadService.uploadFile(file, userId);
+        // Get the user from the token they sent
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String uniqueIdentifier = uploadService.uploadFile(file, userDetails.getUsername());
         return ResponseEntity.ok(new UploadResponse(uniqueIdentifier));
     }
 
