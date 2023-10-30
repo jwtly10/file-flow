@@ -140,9 +140,15 @@ public class SupabaseService {
         }
     }
 
-    public String getUserId(String email) {
-        User user = getUser(email);
-        return user.getUser_Id();
+    public FileDTO getFile(String fileId) {
+        String res = get("uploaded_file_tb", "fileid", fileId);
+        try {
+            // The json response is a JSON array. fileID is unique so there should only be one fileId
+            FileDTO[] files = objectMapper.readValue(res, FileDTO[].class);
+            return files[0];
+        } catch (JsonProcessingException e) {
+            throw new DatabaseException("Failed to get file: " + e.getMessage());
+        }
     }
 
     private FileDTO convertFile(UploadFile uploadFile) {

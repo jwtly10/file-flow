@@ -11,7 +11,7 @@ public class ClientService {
     private final SupabaseService supabaseService;
 
     public String getUserId(String username) {
-        return supabaseService.getUserId(username);
+        return supabaseService.getUser(username).getUser_Id();
     }
 
     public void logFile(UploadFile uploadFile) {
