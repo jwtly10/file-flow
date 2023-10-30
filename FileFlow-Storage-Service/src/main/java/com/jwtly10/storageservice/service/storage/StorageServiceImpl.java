@@ -33,7 +33,7 @@ public class StorageServiceImpl implements StorageService {
     @Value("${supabase.apiKey}")
     private String supabaseKey;
 
-    @Value("${supabase.url}")
+    @Value("${supabase.storage.url}")
     private String supabaseUrl;
 
     @Override
