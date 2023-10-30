@@ -1,5 +1,7 @@
 package com.jwtly10.storageservice.service.storage;
 
+import java.io.IOException;
+
 public interface StorageService {
-    void save(String location, byte[] fileBytes, String mimeType, String fileId);
+    void save(String localFileLocation, String saveLocation, String fileId) throws IOException;
 }

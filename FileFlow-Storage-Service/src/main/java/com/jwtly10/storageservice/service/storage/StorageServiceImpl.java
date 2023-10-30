@@ -12,6 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Service
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
@@ -31,31 +37,61 @@ public class StorageServiceImpl implements StorageService {
     private String supabaseUrl;
 
     @Override
-    public void save(String location, byte[] fileBytes, String mimeType, String fileId) {
-        log.info("Saving file: " + location);
-        String apiUrl = supabaseUrl + bucketName + "/" + location;
+    public void save(String localFileLocation, String saveLocation, String fileId) throws IOException {
+        String mimeType = Files.probeContentType(Path.of(localFileLocation));
+        if (mimeType == null) {
+            mimeType = "text/plain";
+        }
+
+        log.info("Saving file: " + saveLocation);
+        String apiUrl = supabaseUrl + bucketName + "/" + saveLocation;
         HttpHeaders headers = new HttpHeaders();
-        // Use bearer auth
+
         headers.set("Authorization", "Bearer " + supabaseKey);
         headers.set("Content-Type", mimeType);
 
-        HttpEntity<byte[]> req = new HttpEntity<>(fileBytes, headers);
+        HttpEntity<byte[]> req = new HttpEntity<>(getBinaryData(localFileLocation), headers);
         try {
             ResponseEntity<String> res = restTemplate.postForEntity(apiUrl, req, String.class);
 
             if (res.getStatusCode().is2xxSuccessful()) {
-                log.debug("Successfully saved file: " + location);
+                log.debug("Successfully saved file to: " + saveLocation);
             } else {
-                supabaseService.updateFileState(fileId, ProcessedState.FAILED.toString(), res.getBody());
-                log.error("Error saving file" + location + " " + res.getStatusCode() + res.getBody());
-                return;
+                log.error("Error saving file" + saveLocation + " " + res.getStatusCode() + res.getBody());
+                throw new StorageServiceException(res.getStatusCode() + res.getBody());
             }
         } catch (Exception e) {
             supabaseService.updateFileState(fileId, ProcessedState.FAILED.toString(), e.toString());
-            log.error("Failed to save file: " + location + " " + e.getMessage());
+            log.error("Failed to save file: " + saveLocation + " " + e.getMessage());
             throw new StorageServiceException("API Error while saving file");
         }
 
+        cleanUp(new File(localFileLocation));
         supabaseService.updateFileState(fileId, ProcessedState.UPLOADED.toString());
     }
+
+    private void cleanUp(File file) {
+        // Clean up files from local storage after we have uploaded them to service
+        try {
+            if (!file.exists()) {
+                log.error("File does not exist: " + file.getAbsolutePath());
+                return;
+            }
+
+            if (file.delete()) {
+                log.info("Cleaned up file " + file.getAbsolutePath());
+                return;
+            }
+
+            log.error("Failed to delete file: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            log.error("Failed to delete file: " + file.getAbsolutePath() + " " + e.getMessage());
+        }
+    }
+
+    private byte[] getBinaryData(String fileLocation) throws IOException {
+        Path path = Paths.get(fileLocation);
+        return Files.readAllBytes(path);
+    }
+
 }
