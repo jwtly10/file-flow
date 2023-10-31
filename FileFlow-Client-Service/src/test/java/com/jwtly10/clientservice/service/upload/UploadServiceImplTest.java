@@ -1,17 +1,20 @@
-package com.jwtly10.clientservice.service;
+package com.jwtly10.clientservice.service.upload;
 
 import com.jwtly10.clientservice.exceptions.ClientException;
+import com.jwtly10.clientservice.service.client.ClientService;
 import com.jwtly10.clientservice.service.storage.TempStorageService;
-import com.jwtly10.clientservice.service.upload.UploadServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +27,11 @@ public class UploadServiceImplTest {
     @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @InjectMocks
+    @Autowired
     private UploadServiceImpl uploadService;
+
+    @MockBean
+    private ClientService clientService;
 
     @BeforeEach
     public void setUp() {
@@ -40,6 +46,8 @@ public class UploadServiceImplTest {
                 "text/plain",
                 "Hello, World!".getBytes()
         );
+
+        when(clientService.getUserId("test")).thenReturn("testID");
 
         String result = uploadService.uploadFile(mockFile, "test");
 
