@@ -15,17 +15,16 @@ repeatedly.
 ## Features
 
 - **Client Service:** The Client Service provides a user-friendly REST API for uploading and downloading files. It
-  simplifies the process of interacting with the system. And allows for automatic segmentation of files based on user or
-  project.
+  simplifies the process of interacting with the system.
 - **Processor Service:** The Processor Service is responsible for any necessary file processing tasks. This enables
   customization for specific requirements.
-- **Storage Service:** The Storage Service stores files securely in a third-party service, Supabase, ensuring robust
+- **Storage Service:** The Storage Service stores files securely in a third-party service Supabase, ensuring robust
   data management.
 - **Event-Driven Communication:** Kafka events facilitate seamless communication among the microservices, ensuring
   efficient data flow.
 - **Centralized File Management:** Use this project as a centralized solution for handling files across various personal
-  and work-related projects. No need to reinvent the wheel for authentication and file storage; you can simply integrate
-  these APIs
+  and work-related projects. No need to rewrite authentication or file storage; you can simply integrate
+  these APIs.
 - **Spring Security:** With Spring Security implemented using JSON Web Tokens (JWT), data is only accessible to
   authenticated users/clients.
 - **Multithreaded File Processing:** FileFlow uses multithreaded processing of files, ensuring efficient and
@@ -68,14 +67,32 @@ To run this project locally, follow these steps:
 
 ### Uploading a file using cURL
 
+Upload a file using the Client Service's REST API. FileFlow will save this file against the author of the request. This
+is done via the JWT token provided in the request header.
+
+The unique name of the file will be returned. So this should be stored for future reference.
+
 ```bash
-TODO
+# Example cURL commands for uploading files
+curl -X POST -F "file=@/path/to/your/file.png" /api/v1/upload
+curl -X POST -F "file=@/path/to/your/file.log" /api/v1/upload
+
+# Example response:
+{
+  "message": "2cfbd796-a035-4c8c-9499-f56235140c2e.png",
+}
 ```
 
 ### Downloading a file using cURL
 
+Provided a valid JWT token is given, the Client Service will return the requested file. The returned filename will be
+the _original_, not the unique name.
+
+{username} should be replaced with the username of the user who uploaded the file.
+
 ```bash
-TODO
+# Example cURL commands for downloading files
+curl -o output/ -L /api/v1/download/{username}/2cfbd796-a035-4c8c-9499-f56235140c2e.png
 ```
 
 
