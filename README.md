@@ -1,9 +1,11 @@
 # FileFlow: Kafka-Powered File Processing Service
 
-A versatile and powerful microservice-based system that allows uploading, processing and storing files efficiently,
-while leveraging Kafka for seamless event-driven communication. This project is designed to streamline file handling for
+A versatile microservice-based system that allows uploading, processing and storing files efficiently,
+while leveraging Kafka for event-driven communication. This project is designed to streamline file handling for
 various personal projects and work tools, eliminating the need to implement authentication and file storage services
 repeatedly.
+
+Very easily extendable to implement custom file processing, built as a means to have more experience with Kafka.
 
 ## Sections
 
